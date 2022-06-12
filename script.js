@@ -1,28 +1,50 @@
 let prevNumber = '';
 let calculationOperator = '';
-let currentNumber = '0';
+let currentNumber = '';
 
 const calculatorScreen = document.querySelector('.calculator-screen');
 
 const updateScreen = (number) => {
-    calculatorScreen.value = number;
+    if(number === ''){
+        calculatorScreen.value = 0;
+    }
+    else{
+        calculatorScreen.value = number;
+    }
 }
 
 const inputNumber = (number) => {
-    if (currentNumber === '0') {
-        currentNumber = number;
+    if (currentNumber !== '') {
+        currentNumber += number;
     }
     else {
-        currentNumber += number;
+        currentNumber = number;
     }
 }
 
 const inputOperator = (operator) => {
+    console.log(prevNumber)
+    console.log(calculationOperator)
+    console.log(currentNumber)
     if(calculationOperator === ''){
+        if(currentNumber === ''){
+            // calculationOperator = operator;
+            prevNumber = '0';
+        }
+        else{
+            prevNumber = currentNumber;
+        }
+    }
+    else if (prevNumber !== '' && currentNumber !== ''){
+        calculate();
+        updateScreen(currentNumber);
         prevNumber = currentNumber;
     }
-    calculationOperator = operator;
-    currentNumber = '';
+
+    // if(currentNumber !== ''){
+        calculationOperator = operator;
+        currentNumber = '';
+    // }
 }
 
 const numbers = document.querySelectorAll(".number");
@@ -45,38 +67,45 @@ operators.forEach((operator) => {
 const calculate = () => {
     let result = '';
 
-    switch(calculationOperator) {
-        case "+":
-            result = parseFloat(prevNumber) + parseFloat(currentNumber);
-            break
-        case "-":
-            result = parseFloat(prevNumber) - parseFloat(currentNumber);
-            break
-        case "*":
-            result = parseFloat(prevNumber) * parseFloat(currentNumber);
-            break
-        case "/":
-            result = parseFloat(prevNumber) / parseFloat(currentNumber);
-            break
-        default:
-            break
-    }
+    if(currentNumber !== ''){
+        switch(calculationOperator) {
+            case "+":
+                result = parseFloat(prevNumber) + parseFloat(currentNumber);
+                break
+            case "-":
+                result = parseFloat(prevNumber) - parseFloat(currentNumber);
+                break
+            case "*":
+                result = parseFloat(prevNumber) * parseFloat(currentNumber);
+                break
+            case "/":
+                result = parseFloat(prevNumber) / parseFloat(currentNumber);
+                break
+            case "%":
+                result = parseFloat(prevNumber) % parseFloat(currentNumber);
+                break
+            default:
+                break
+        }
 
-    currentNumber = result
-    calculationOperator = ''
+        calculationOperator = ''
+        currentNumber = result
+    }    
 }
 
 const equalSign = document.querySelector('.equal-sign');
 
 equalSign.addEventListener('click', () => {
     calculate();
-    updateScreen(currentNumber);
+    if(currentNumber !== ''){
+        updateScreen(currentNumber);
+    }
 });
 
 const clearAll = () => {
     prevNumber = ''
     calculationOperator = ''
-    currentNumber = '0'
+    currentNumber = ''
 }
 
 const clearBtn = document.querySelector('.all-clear');
